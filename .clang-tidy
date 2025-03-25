@@ -152,4 +152,12 @@ CheckOptions:
     value: 'lower_case'
   - key: 'readability-identifier-naming.VirtualMethodCase'
     value: 'lower_case'
+  - key: readability-identifier-length.IgnoredParameterNames
+    value: 'p|p0|p1|i|j|k|v|x|X|y|Y|z|Z|a|A|b|B|c|C|d|D|s|ab|AB|ba|BA|bc|BC|cb|CB|cd|CD|dc|DC|ad|AD|da|DA|ip|os'
+  - key: readability-identifier-length.IgnoredVariableNames
+    value: '_p|p0|p1|i|j|k|v|x|X|y|Y|z|Z|a|A|b|B|c|C|d|D|s|ab|AB|ba|BA|bc|BC|cb|CB|cd|CD|dc|DC|ad|AD|da|DA|ip|os'
+  - key: readability-identifier-length.IgnoredLoopCounterNames
+    value: '_p|p0|p1|i|j|k|v|x|X|y|Y|z|Z|a|A|b|B|c|C|d|D|s|ab|AB|ba|BA|bc|BC|cb|CB|cd|CD|dc|DC|ad|AD|da|DA|ip|os'
+  - key: readability-implicit-bool-conversion
+    value: True
 ...
