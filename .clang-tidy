@@ -1,7 +1,4 @@
 ---
-# Enable ALL the things! Except not really
-# misc-non-private-member-variables-in-classes: the options don't do anything
-# modernize-use-nodiscard: too aggressive, attribute is situationally useful
 Checks: "*,\
   -google-readability-todo,\
   -altera-*,\
@@ -16,7 +13,6 @@ WarningsAsErrors: ''
 CheckOptions:
   - key: 'bugprone-argument-comment.StrictMode'
     value: 'true'
-# Prefer using enum classes with 2 values for parameters instead of bools
   - key: 'bugprone-argument-comment.CommentBoolLiterals'
     value: 'true'
   - key: 'bugprone-misplaced-widening-cast.CheckImplicitCasts'
@@ -45,7 +41,6 @@ CheckOptions:
     value: 'true'
   - key: 'readability-redundant-access-specifiers.CheckFirstDeclaration'
     value: 'true'
-# These seem to be the most common identifier styles
   - key: 'readability-identifier-naming.AbstractClassCase'
     value: 'lower_case'
   - key: 'readability-identifier-naming.ClassCase'
@@ -159,5 +154,5 @@ CheckOptions:
   - key: readability-identifier-length.IgnoredLoopCounterNames
     value: '_p|p0|p1|i|j|k|v|x|X|y|Y|z|Z|a|A|b|B|c|C|d|D|s|ab|AB|ba|BA|bc|BC|cb|CB|cd|CD|dc|DC|ad|AD|da|DA|ip|os'
   - key: readability-implicit-bool-conversion
-    value: True
+    value: true
 ...
