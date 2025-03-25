@@ -1,14 +1,14 @@
+#include <fmt/core.h>
 #include <algorithm>
 #include <chrono>
 #include <cmath>
-#include <fmt/core.h>
 #include <iostream>
 #include <numeric>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
 
-auto tokenize(const std::string &input) -> std::vector<std::string_view> {
+auto tokenize(const std::string& input) -> std::vector<std::string_view> {
   std::vector<std::string_view> out;
   size_t start = 0;
   size_t end = input.find(' ');
@@ -21,7 +21,7 @@ auto tokenize(const std::string &input) -> std::vector<std::string_view> {
   return out;
 }
 
-auto count_ngram(const std::vector<std::string_view> &tokens, size_t n_gram)
+auto count_ngram(const std::vector<std::string_view>& tokens, size_t n_gram)
     -> std::unordered_map<std::string, size_t> {
   std::unordered_map<std::string, size_t> count;
   for (size_t i = 1; i < n_gram + 1; ++i) {
@@ -30,7 +30,7 @@ auto count_ngram(const std::vector<std::string_view> &tokens, size_t n_gram)
       std::string s;
       for (size_t k = j; k < i + j; ++k) {
         s += tokens[k];
-        s += "|"; // assumes no pipes
+        s += "|";  // assumes no pipes
       }
       count[s] += 1;
     }
@@ -38,10 +38,10 @@ auto count_ngram(const std::vector<std::string_view> &tokens, size_t n_gram)
   return count;
 }
 
-auto bleu_score(const std::vector<std::string> &preds,
-                const std::vector<std::vector<std::string>> &targets,
-                size_t n_gram = 4, bool smooth = false) {
-
+auto bleu_score(const std::vector<std::string>& preds,
+                const std::vector<std::vector<std::string>>& targets,
+                size_t n_gram = 4,
+                bool smooth = false) {
   const std::vector<float> weights(n_gram, 1.0 / n_gram);
 
   auto st = std::chrono::high_resolution_clock::now();
@@ -86,9 +86,9 @@ auto bleu_score(const std::vector<std::string> &preds,
     auto pred_n_gram = count_ngram(tokenized_preds[i], n_gram);
 
     std::unordered_map<std::string, size_t> targets_n_gram;
-    for (const auto &tokenized_target : tokenized_targets[i]) {
+    for (const auto& tokenized_target : tokenized_targets[i]) {
       auto target_n_gram = count_ngram(tokenized_target, n_gram);
-      for (const auto &[k, v] : target_n_gram) {
+      for (const auto& [k, v] : target_n_gram) {
         if (targets_n_gram.count(k)) {
           targets_n_gram[k] = std::max(targets_n_gram[k], v);
         } else {
@@ -98,20 +98,20 @@ auto bleu_score(const std::vector<std::string> &preds,
     }
 
     std::unordered_map<std::string, size_t> n_gram;
-    for (const auto &[k, v] : targets_n_gram) {
+    for (const auto& [k, v] : targets_n_gram) {
       if (pred_n_gram.count(k))
         n_gram[k] = std::min(pred_n_gram[k], v);
     }
-    for (const auto &[k, v] : pred_n_gram) {
+    for (const auto& [k, v] : pred_n_gram) {
       if (targets_n_gram.count(k))
         n_gram[k] = std::min(targets_n_gram[k], v);
     }
 
-    for (const auto &[k, v] : n_gram) {
+    for (const auto& [k, v] : n_gram) {
       size_t k_n_gram = std::count(k.begin(), k.end(), '|');
       num[k_n_gram - 1] += v;
     }
-    for (const auto &[k, v] : pred_n_gram) {
+    for (const auto& [k, v] : pred_n_gram) {
       size_t k_n_gram = std::count(k.begin(), k.end(), '|');
       denom[k_n_gram - 1] += v;
     }
@@ -126,19 +126,19 @@ auto bleu_score(const std::vector<std::string> &preds,
   std::vector<double> precision(n_gram);
   if (smooth) {
     std::transform(num.begin(), num.end(), denom.begin(), precision.begin(),
-                   [](const auto &n_val, const auto &denom_val) {
+                   [](const auto& n_val, const auto& denom_val) {
                      return static_cast<double>((n_val + 1)) / (denom_val + 1);
                    });
     precision[0] = static_cast<double>(num[0]) / denom[0];
   } else {
     std::transform(num.begin(), num.end(), denom.begin(), precision.begin(),
-                   [](const auto &n_val, const auto &denom_val) {
+                   [](const auto& n_val, const auto& denom_val) {
                      return static_cast<double>(n_val) / denom_val;
                    });
   }
 
   std::transform(precision.begin(), precision.end(), weights.begin(),
-                 precision.begin(), [](auto &precision_val, auto &weight_val) {
+                 precision.begin(), [](auto& precision_val, auto& weight_val) {
                    return weight_val * std::log(precision_val);
                  });
 

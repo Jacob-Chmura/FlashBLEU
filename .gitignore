@@ -32,6 +32,13 @@
 *.app
 
 # Builds
-build
-debug
-release
+build/
+debug/
+release/
+cmake-build-*/
+conan/
+CMakeLists.txt.user
+CMakeUserPresets.json
+compile_commands.json
+conan_cache_*.tgz
+.clangd
