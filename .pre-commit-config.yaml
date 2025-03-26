@@ -71,15 +71,33 @@ repos:
         name: Python Static Type Check
         exclude: test/
 
-  - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: 'v20.1.0'
-    hooks:
-      - id: clang-format
-        name: Format C++ code
   - repo: local
     hooks:
       - id: cppcheck
         name: cppcheck
         entry: cppcheck
         language: system
+        files: \.(c|h|cpp)$
+
+  - repo: local
+    hooks:
+      - id: compiledb
+        name: Compile DB (for clang-tidy)
+        entry: compiledb
+        language: system
+        always_run: true
+        require_serial: true
+        pass_filenames: false
+
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: 'v20.1.0'
+    hooks:
+      - id: clang-format
+        name: Format C++ code
+
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
+    hooks:
+      - id: clang-tidy
+        name: Linting C++ code
         files: \.(c|h|cpp)$
