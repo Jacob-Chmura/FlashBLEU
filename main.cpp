@@ -8,8 +8,29 @@
 #include <unordered_map>
 #include <vector>
 
-namespace {
+class ScopedTimer {
+ public:
+  using ClockType = std::chrono::steady_clock;
 
+  explicit ScopedTimer(const char* func_name)
+      : func_name_(func_name), st_{ClockType::now()} {}
+
+  ScopedTimer(const ScopedTimer&) = delete;
+  ScopedTimer(ScopedTimer&&) = delete;
+  auto operator=(const ScopedTimer&) -> ScopedTimer& = delete;
+  auto operator=(const ScopedTimer&&) -> ScopedTimer& = delete;
+
+  ~ScopedTimer() {
+    std::chrono::duration<double> s = ClockType::now() - st_;
+    std::cout << fmt::format("{}: {} s", func_name_, s.count()) << "\n";
+  }
+
+ private:
+  const std::string func_name_{};
+  const ClockType::time_point st_{};
+};
+
+namespace {
 auto tokenize(const std::string& input, char delim = ' ')
     -> std::vector<std::string_view> {
   std::vector<std::string_view> out;
@@ -44,9 +65,9 @@ auto bleu_score(const std::vector<std::string>& preds,
 
   auto st = std::chrono::high_resolution_clock::now();
 
-  std::vector<std::vector<std::string_view>> token_preds(preds.size());
+  std::vector<std::vector<std::string_view>> tokenized_preds(preds.size());
   for (size_t i = 0; i < preds.size(); ++i) {
-    token_preds[i] = tokenize(preds[i]);
+    tokenized_preds[i] = tokenize(preds[i]);
   }
   std::vector<std::vector<std::vector<std::string_view>>> token_targets(
       targets.size());
@@ -72,7 +93,7 @@ auto bleu_score(const std::vector<std::string>& preds,
   std::vector<size_t> len_diffs(token_targets.size());
   for (size_t i = 0; i < preds.size(); ++i) {
     len_diffs.clear();
-    const size_t pred_len = token_preds[i].size();
+    const size_t pred_len = tokenized_preds[i].size();
     preds_len += pred_len;
     std::transform(
         token_targets[i].begin(), token_targets[i].end(), len_diffs.begin(),
@@ -83,7 +104,7 @@ auto bleu_score(const std::vector<std::string>& preds,
         std::distance(len_diffs.begin(), std::ranges::min_element(len_diffs));
     targets_len += len_diffs[min_idx];
 
-    auto pred_n_gram = count_ngram(token_preds[i], n_gram);
+    auto pred_n_gram = count_ngram(tokenized_preds[i], n_gram);
 
     std::unordered_map<std::string, size_t> targets_n_gram;
     for (const auto& tokenized_target : token_targets[i]) {
