@@ -1,8 +1,4 @@
 ---
-ci:
-  autofix_prs: true
-  autoupdate_schedule: weekly
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -20,6 +16,8 @@ repos:
         name: Check toml
       - id: check-yaml
         name: Check yaml
+      - id: check-added-large-files
+        name: Check added large files
 
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.35.1
@@ -70,5 +68,11 @@ repos:
     rev: v1.13.0
     hooks:
       - id: mypy
-        name: mypy
+        name: Python Static Type Check
         exclude: test/
+
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: 'v20.1.0'
+    hooks:
+      - id: clang-format
+        name: Format C++ code
