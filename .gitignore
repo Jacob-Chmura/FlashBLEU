@@ -33,8 +33,6 @@
 
 # Builds
 build/
-debug/
-release/
 cmake-build-*/
 conan/
 CMakeLists.txt.user
