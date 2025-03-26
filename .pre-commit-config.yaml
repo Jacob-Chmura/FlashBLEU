@@ -76,3 +76,10 @@ repos:
     hooks:
       - id: clang-format
         name: Format C++ code
+  - repo: local
+    hooks:
+      - id: cppcheck
+        name: cppcheck
+        entry: cppcheck
+        language: system
+        files: \.(c|h|cpp)$
