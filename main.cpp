@@ -142,19 +142,17 @@ auto bleu_score(const std::vector<std::string>& preds,
     ScopedTimer timer{"Bleu"};
 
     std::vector<double> precision(n_gram);
+    const auto smooth_val = smooth ? 1 : 0;
+    std::ranges::transform(
+        num, denom, precision.begin(),
+        [smooth_val](const auto& n_val, const auto& denom_val) {
+          return static_cast<double>(n_val + smooth_val) /
+                 (denom_val + smooth_val);
+        });
+
     if (smooth) {
-      std::ranges::transform(num, denom, precision.begin(),
-                             [](const auto& n_val, const auto& denom_val) {
-                               return static_cast<double>((n_val + 1)) /
-                                      (denom_val + 1);
-                             });
       precision[0] =
           static_cast<double>(num[0]) / static_cast<double>(denom[0]);
-    } else {
-      std::ranges::transform(num, denom, precision.begin(),
-                             [](const auto& n_val, const auto& denom_val) {
-                               return static_cast<double>(n_val) / denom_val;
-                             });
     }
 
     std::ranges::transform(precision, weights, precision.begin(),
